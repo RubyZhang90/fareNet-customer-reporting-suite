@@ -14,5 +14,8 @@ FLIGHT_TYPE [FT]
 SITE EDITION [SE]
 DEVICE CATEGORY [DC]
 
-Evaluate and Verifiy data for each additional join before finalizing the code for every client.
-https://docs.google.com/spreadsheets/d/1NJGJ-Vuq5LbDTy_5T7Gu6unMDuX5asuQFIHVNEJBWP8/edit#gid=1229048930
+Evaluate and verifiy data for each additional join before finalizing the code for every client.
+
+  1. Use raw-sql-code and evaluate-join-sql to do so
+  2. Complete this Spreadsheet 
+  https://docs.google.com/spreadsheets/d/1NJGJ-Vuq5LbDTy_5T7Gu6unMDuX5asuQFIHVNEJBWP8/edit#gid=1229048930
