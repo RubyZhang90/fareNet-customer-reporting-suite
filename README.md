@@ -16,6 +16,6 @@ DEVICE CATEGORY [DC]
 
 Evaluate and verifiy data for each additional join before finalizing the code for every client.
 
-  1. Use raw-sql-code and evaluate-join-sql to do so
+  1. Use raw-data-code and evaluate-join-sql to do so
   2. Complete this Spreadsheet 
   https://docs.google.com/spreadsheets/d/1NJGJ-Vuq5LbDTy_5T7Gu6unMDuX5asuQFIHVNEJBWP8/edit#gid=1229048930
