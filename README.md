@@ -1,2 +1,18 @@
 # FareNet-Dashboards
-SQL Code to create complex reporting using Aggregate Search Table and Aggregated Booking Table
+SQL Code to create complex reporting using Aggregated Search Table and Aggregated Booking Table.
+
+The tables need to be joined to see Search and Booking numbers together but there is NO specific USERID to do so. 
+Hence we need to carefully evaluate which parameter are of atmost importance.
+
+Mandatory Join Parameters include:
+DATE, DEPARTUREIATACODE, ARRIVALIATACODE, JOURNEY_TYPE
+OUTBOUND_FARECLASS, INBOUND_FARECLASS, 
+DEPARTURE DATE (added on request not necessarily needed)
+
+Additional fields which may cause difference to actual bookings:  	
+FLIGHT_TYPE [FT]
+SITE EDITION [SE]
+DEVICE CATEGORY [DC]
+
+Evaluate and Verifiy data for each additional join before finalizing the code for every client.
+https://docs.google.com/spreadsheets/d/1NJGJ-Vuq5LbDTy_5T7Gu6unMDuX5asuQFIHVNEJBWP8/edit#gid=1229048930
