@@ -2,7 +2,7 @@
 SQL Code to create complex reporting using Aggregated Search Table and Aggregated Booking Table.
 
 The tables need to be joined to see Search and Booking numbers together but there is NO specific USERID to do so. 
-Hence we need to carefully evaluate which parameter are of atmost importance to join these tables.
+Hence we need to carefully need to evaluate parameters of atmost importance to join these tables.
 
 Mandatory Join Parameters:
 DATE, DEPARTUREIATACODE, ARRIVALIATACODE, JOURNEY_TYPE
