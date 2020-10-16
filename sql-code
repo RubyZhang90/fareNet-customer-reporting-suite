@@ -1,0 +1,66 @@
+--README BEFORE CLONING THIS FILE
+
+SELECT ANF.*,AFC.*
+FROM (
+      (SELECT distinct farenetdate,
+                       departureairportiatacode,
+                       arrivalairportiatacode,
+                       journeytype,
+                       departuredate,
+                       outboundfareclass,
+                       inboundfareclass,
+                       flighttype,
+                       --siteedition,
+                       --devicecategory,
+                       sum(searches)        AS searches,
+                       AVG(averagepriceusd) AS averagepriceusd,
+                       SUM(passengercount)  AS searchpassengercount
+       FROM "farenet_s3"."aggregated_normalized_farenet_001"
+       WHERE airlineiatacode = 'CM'
+         AND farenetdate >= DATE('2019-01-01')
+         AND farenetdate < current_date
+         AND departureairportiatacode is not null
+         AND arrivalairportiatacode is not null
+       GROUP BY farenetdate, departureairportiatacode, arrivalairportiatacode, journeytype,
+                departuredate, outboundfareclass, inboundfareclass
+               , flighttype
+          --, siteedition
+          --, devicecategory
+      ) AS ANF
+         LEFT JOIN
+     (SELECT DISTINCT farenetconfirmationdate  AS "anc_farenetconfirmationdate",
+                      departureairportiatacode AS "anc_departureairportiatacode",
+                      arrivalairportiatacode   AS "anc_arrivalairportiatacode",
+                      journeytype              AS "anc_journeytype",
+                      departuredate            AS "anc_departuredate",
+                      outboundfareclass        AS "anc_outboundfareclass",
+                      inboundfareclass         AS "anc_inboundfareclass",
+                      flighttype               AS "anc_flighttype",
+                      --siteedition              AS "anc_siteedition",
+                      --devicecategory           AS "anc_devicecategory",
+                      sum(bookings)            AS bookings,
+                      sum(revenue)             AS revenue,
+                      sum(passengercount)      AS passengercount
+      FROM farenet_s3.aggregated_normalized_farenet_confirmation_001
+      WHERE airlineiatacode = 'CM'
+        AND farenetconfirmationdate >= DATE('2019-01-01')
+        AND farenetconfirmationdate < current_date
+      GROUP BY farenetconfirmationdate, departureairportiatacode, arrivalairportiatacode, journeytype,
+               departuredate, outboundfareclass, inboundfareclass
+              , flighttype
+         --,siteedition
+         --,devicecategory
+     ) AS AFC
+     ON (ANF.farenetdate = AFC."anc_farenetconfirmationdate"
+         AND ANF.departureairportiatacode = AFC.anc_departureairportiatacode
+         AND ANF.arrivalairportiatacode = AFC.anc_arrivalairportiatacode
+         AND ANF.journeytype = AFC.anc_journeytype
+         AND ANF.departuredate = AFC.anc_departuredate
+         AND ANF.outboundfareclass = AFC.anc_outboundfareclass
+         AND ((ANF.inboundfareclass) = UPPER(AFC.anc_inboundfareclass)
+             OR UPPER(AFC.anc_inboundfareclass) is null)
+         AND ANF.flighttype = AFC.anc_flighttype
+         --AND ANF.siteedition = AFC.anc_siteedition
+         --AND ANF.devicecategory = AFC.anc_devicecategory
+         )
+         )
