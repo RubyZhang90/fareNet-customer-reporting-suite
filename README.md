@@ -17,7 +17,7 @@ Join Parameters:
 9.SITE EDITION [SE] 
 10.DEVICE CATEGORY [DC]
 
-Evaluate and verifiy data as the spreadsheet before finalizing the code for every client.
+Evaluate and verifiy data as the below spreadsheet.
 
   1. Use raw-data-code and evaluate-join-sql to compare data between Redshift and Dataset for FareNet Ddashboards
   2. Complete this Spreadsheet with customer's data
