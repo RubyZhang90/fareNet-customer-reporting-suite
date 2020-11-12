@@ -23,3 +23,4 @@ Evaluate and verifiy data as the below spreadsheet.
   1. Use raw-data-code and evaluate-join-sql to compare data between Redshift and Dataset for FareNet Ddashboards
   2. Complete this Spreadsheet with customer's data
   https://docs.google.com/spreadsheets/d/1NJGJ-Vuq5LbDTy_5T7Gu6unMDuX5asuQFIHVNEJBWP8/edit#gid=1229048930
+  3. Use sql-code to replicate dashboards by changing airlineiatacode.
