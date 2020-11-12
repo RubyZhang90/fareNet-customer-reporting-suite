@@ -4,18 +4,21 @@
 The tables need to be joined to see Search and Booking numbers together but there is NO specific USERID to do so. 
 Hence we need to carefully need to evaluate parameters of atmost importance to join these tables.
 
-Mandatory Join Parameters:
-DATE, DEPARTUREIATACODE, ARRIVALIATACODE, JOURNEY_TYPE
-OUTBOUND_FARECLASS, INBOUND_FARECLASS, 
-DEPARTURE DATE (added on request not necessarily needed)
+Join Parameters:
 
-Additional fields which may cause difference to actual bookings:  	
-FLIGHT_TYPE [FT]
-SITE EDITION [SE]
-DEVICE CATEGORY [DC]
+1.AIRLINEIATACODE
+2.DATE 
+3.DEPARTUREIATACODE
+4.ARRIVALIATACODE
+5.JOURNEY_TYPE
+6.OUTBOUND_FARECLASS
+7.INBOUND_FARECLASS, 
+8.DEPARTURE DATE
+9.SITE EDITION [SE] 
+10.DEVICE CATEGORY [DC]
 
-Evaluate and verifiy data for each additional join before finalizing the code for every client.
+Evaluate and verifiy data as the spreadsheet before finalizing the code for every client.
 
-  1. Use raw-data-code and evaluate-join-sql to do so
+  1. Use raw-data-code and evaluate-join-sql to compare data between Redshift and Dataset for FareNet Ddashboards
   2. Complete this Spreadsheet with customer's data
   https://docs.google.com/spreadsheets/d/1NJGJ-Vuq5LbDTy_5T7Gu6unMDuX5asuQFIHVNEJBWP8/edit#gid=1229048930
