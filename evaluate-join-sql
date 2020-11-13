@@ -13,8 +13,8 @@ FROM (
                           returndate,
                           outboundfareclass,
                           inboundfareclass,
-                          siteedition,
-                          devicecategory,
+                          siteedition,                                   -- Remove the fields along with removing respective joins
+                          devicecategory,                                -- Remove the fields along with removing respective joins
                           sum(searches)        AS searches,
                           AVG(averagepriceusd) AS averagepriceusd,
                           SUM(passengercount)  AS searchpassengercount
@@ -26,8 +26,8 @@ FROM (
             AND arrivalairportiatacode is not null
           GROUP BY airlineiatacode, farenetdate, departureairportiatacode, arrivalairportiatacode,
               journeytype, departuredate, returndate, outboundfareclass, inboundfareclass
-                 , siteedition
-                 , devicecategory
+                 , siteedition                                   -- Remove the fields along with removing respective joins
+                 , devicecategory                                -- Remove the fields along with removing respective joins
          ) AS ANF
              LEFT JOIN
              (SELECT DISTINCT airlineiatacode          AS "anc_airlineiatacode",
@@ -39,8 +39,8 @@ FROM (
                               returndate               AS "anc_returndate",
                               outboundfareclass        AS "anc_outboundfareclass",
                               inboundfareclass         AS "anc_inboundfareclass",
-                              siteedition              AS "anc_siteedition",
-                              devicecategory           AS "anc_devicecategory",
+                              siteedition              AS "anc_siteedition",            -- Remove the fields along with removing respective joins
+                              devicecategory           AS "anc_devicecategory",         -- Remove the fields along with removing respective joins
                               sum(bookings)            AS bookings,
                               sum(revenue)             AS revenue,
                               sum(passengercount)      AS passengercount
@@ -50,8 +50,8 @@ FROM (
                 AND farenetconfirmationdate < DATE('2020-10-09')
               GROUP BY airlineiatacode, farenetconfirmationdate, departureairportiatacode, arrivalairportiatacode,
                   journeytype, departuredate, returndate, outboundfareclass, inboundfareclass
-                     ,siteedition
-                     ,devicecategory
+                 , siteedition                                     -- Remove the fields along with removing respective joins
+                 , devicecategory                                  -- Remove the fields along with removing respective joins
              ) AS ANC
              ON (ANF.airlineiatacode = ANC.anc_airlineiatacode
                  AND ANF.farenetdate = ANC."anc_farenetconfirmationdate"
@@ -64,8 +64,8 @@ FROM (
                  AND ANF.outboundfareclass = ANC.anc_outboundfareclass
                  AND (ANF.inboundfareclass = ANC.anc_inboundfareclass
                      OR ANC.anc_inboundfareclass is null)
-                 AND ANF.siteedition = ANC.anc_siteedition
-                 AND ANF.devicecategory = ANC.anc_devicecategory
+                 AND ANF.siteedition = ANC.anc_siteedition              -- Remove the fields along with removing respective joins
+                 AND ANF.devicecategory = ANC.anc_devicecategory        -- Remove the fields along with removing respective joins
                  )
          )
          JOIN farenet_s3.core_dictionary_001 CDD
