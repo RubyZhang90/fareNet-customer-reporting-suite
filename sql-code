@@ -70,7 +70,7 @@ FROM (
                  AND ANF.devicecategory = ANC.anc_devicecategory
                  )
          )
-         JOIN farenet_s3.core_dictionary_001 CDD
+         LEFT JOIN farenet_s3.core_dictionary_001 CDD
               on departureairportiatacode = CDD.iatacode
-         JOIN  farenet_s3.core_dictionary_001 CDA
+         LEFT JOIN  farenet_s3.core_dictionary_001 CDA
                on arrivalairportiatacode = CDA.iatacode
