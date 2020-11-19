@@ -1,3 +1,82 @@
 Link to EM - FareNet Dashboard
 
 https://10ay.online.tableau.com/#/site/everymundo/workbooks/766815/views
+
+CODE to Update - FareNet Dashboards
+ 
+SELECT ANF.*, ANC.*,
+       CDD.iatacode AS departureiatacode,
+       CDD.countryisocode AS departurecountryisocode,
+       CDA.iatacode AS arrivaliatacode,
+       CDA.countryisocode AS arrivalcountryisocode
+FROM (
+         (SELECT distinct airlineiatacode,
+                          farenetdate,
+                          departureairportiatacode,
+                          arrivalairportiatacode,
+                          journeytype,
+                          departuredate,
+                          returndate,
+                          outboundfareclass,
+                          inboundfareclass,
+                          siteedition,
+                          devicecategory,
+                          sum(searches)        AS searches,
+                          AVG(averagepriceusd) AS averagepriceusd,
+                          SUM(passengercount)  AS searchpassengercount
+          FROM "farenet_s3"."aggregated_normalized_farenet_001"
+          WHERE airlineiatacode = 'CM'
+              AND MONTH = Month(current_date)-1
+            --AND farenetdate >= current_date - interval '31' day
+            --AND farenetdate < current_date
+            AND departureairportiatacode is not null
+            AND arrivalairportiatacode is not null
+          GROUP BY airlineiatacode, farenetdate, departureairportiatacode, arrivalairportiatacode,
+              journeytype, departuredate, returndate, outboundfareclass, inboundfareclass
+                 , siteedition
+                 , devicecategory
+         ) AS ANF
+             LEFT JOIN
+             (SELECT DISTINCT airlineiatacode          AS "anc_airlineiatacode",
+                              farenetconfirmationdate  AS "anc_farenetconfirmationdate",
+                              departureairportiatacode AS "anc_departureairportiatacode",
+                              arrivalairportiatacode   AS "anc_arrivalairportiatacode",
+                              journeytype              AS "anc_journeytype",
+                              departuredate            AS "anc_departuredate",
+                              returndate               AS "anc_returndate",
+                              outboundfareclass        AS "anc_outboundfareclass",
+                              inboundfareclass         AS "anc_inboundfareclass",
+                              siteedition              AS "anc_siteedition",
+                              devicecategory           AS "anc_devicecategory",
+                              sum(bookings)            AS bookings,
+                              sum(revenue)             AS revenue,
+                              sum(passengercount)      AS passengercount
+              FROM farenet_s3.aggregated_normalized_farenet_confirmation_001
+              WHERE airlineiatacode = 'CM'
+                AND MONTH = Month(current_date)-1
+               -- AND farenetconfirmationdate >= current_date - interval '31' day
+               -- AND farenetconfirmationdate < current_date
+              GROUP BY airlineiatacode, farenetconfirmationdate, departureairportiatacode, arrivalairportiatacode,
+                  journeytype, departuredate, returndate, outboundfareclass, inboundfareclass
+                     ,siteedition
+                     ,devicecategory
+             ) AS ANC
+             ON (ANF.airlineiatacode = ANC.anc_airlineiatacode
+                 AND ANF.farenetdate = ANC."anc_farenetconfirmationdate"
+                 AND ANF.departureairportiatacode = ANC.anc_departureairportiatacode
+                 AND ANF.arrivalairportiatacode = ANC.anc_arrivalairportiatacode
+                 AND ANF.journeytype = ANC.anc_journeytype
+                 AND ANF.departuredate = ANC.anc_departuredate
+                 AND (ANF.returndate = ANC.anc_returndate
+                     OR ANC.anc_returndate is null)
+                 AND ANF.outboundfareclass = ANC.anc_outboundfareclass
+                 AND (ANF.inboundfareclass = ANC.anc_inboundfareclass
+                     OR ANC.anc_inboundfareclass is null)
+                 AND ANF.siteedition = ANC.anc_siteedition
+                 AND ANF.devicecategory = ANC.anc_devicecategory
+                 )
+         )
+         LEFT JOIN farenet_s3.core_dictionary_001 CDD
+              on departureairportiatacode = CDD.iatacode
+         LEFT JOIN  farenet_s3.core_dictionary_001 CDA
+               on arrivalairportiatacode = CDA.iatacode
