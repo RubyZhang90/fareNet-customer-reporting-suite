@@ -5,7 +5,7 @@ SELECT sum(searches)            AS Searches
 FROM "farenet_s3"."aggregated_normalized_farenet_001"
 WHERE airlineiatacode = 'CM'
   AND YEAR = 2020
-  AND farenetdate >= DATE('2020-10-02')         -- Verify latest complete week, preferably from a Monday to Monday
+  AND farenetdate >= DATE('2020-10-02')         -- Verify latest complete week
   AND farenetdate < DATE('2020-10-09')
   AND departureairportiatacode is not null
   AND arrivalairportiatacode is not null
@@ -16,7 +16,7 @@ SELECT sum(bookings) AS Bookings
 FROM "farenet_s3"."aggregated_normalized_farenet_confirmation_001"
 WHERE airlineiatacode = 'CM'
   AND YEAR = 2020
-  AND farenetconfirmationdate >= DATE('2020-10-02')  -- Verify latest complete week, preferably from a Monday to Monday
+  AND farenetconfirmationdate >= DATE('2020-10-02')  -- Verify latest complete week
   AND farenetconfirmationdate < DATE('2020-10-09')
   AND departureairportiatacode is not null
   AND arrivalairportiatacode is not null
