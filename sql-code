@@ -4,13 +4,18 @@ SELECT ANF.*, ANC.*,
        CDD.iatacode AS departureiatacode,
        CDD.countryisocode AS departurecountryisocode,
        CDA.iatacode AS arrivaliatacode,
-       CDA.countryisocode AS arrivalcountryisocode
+       CDA.countryisocode AS arrivalcountryisocode,
+       CDDB.iatacode AS departureiatacode_booked,
+       CDDB.countryisocode AS departurecountryisocode_booked,
+       CDAB.iatacode AS arrivaliatacode_booked,
+       CDAB.countryisocode AS arrivalcountryisocode_booked
 FROM (
          (SELECT distinct airlineiatacode,
                           farenetdate,
                           departureairportiatacode,
                           arrivalairportiatacode,
                           journeytype,
+                          flightType,
                           departuredate,
                           returndate,
                           outboundfareclass,
@@ -23,20 +28,21 @@ FROM (
           FROM "farenet_s3"."aggregated_normalized_farenet_001"
           WHERE airlineiatacode = 'CM'
             AND farenetdate >= DATE('2019-08-01')
-            AND farenetdate < current_date
+            AND farenetdate < CURRENT_DATE
             AND departureairportiatacode is not null
             AND arrivalairportiatacode is not null
           GROUP BY airlineiatacode, farenetdate, departureairportiatacode, arrivalairportiatacode,
-              journeytype, departuredate, returndate, outboundfareclass, inboundfareclass
+              journeytype, flightType, departuredate, returndate, outboundfareclass, inboundfareclass
                  , siteedition
                  , devicecategory
          ) AS ANF
-             LEFT JOIN
+             FULL JOIN
              (SELECT DISTINCT airlineiatacode          AS "anc_airlineiatacode",
                               farenetconfirmationdate  AS "anc_farenetconfirmationdate",
                               departureairportiatacode AS "anc_departureairportiatacode",
                               arrivalairportiatacode   AS "anc_arrivalairportiatacode",
                               journeytype              AS "anc_journeytype",
+                              flightType               AS "anc_flightType",
                               departuredate            AS "anc_departuredate",
                               returndate               AS "anc_returndate",
                               outboundfareclass        AS "anc_outboundfareclass",
@@ -49,9 +55,9 @@ FROM (
               FROM farenet_s3.aggregated_normalized_farenet_confirmation_001
               WHERE airlineiatacode = 'CM'
                 AND farenetconfirmationdate >= DATE('2019-08-01')
-                AND farenetconfirmationdate < current_date
+                AND farenetconfirmationdate < CURRENT_DATE
               GROUP BY airlineiatacode, farenetconfirmationdate, departureairportiatacode, arrivalairportiatacode,
-                  journeytype, departuredate, returndate, outboundfareclass, inboundfareclass
+                  journeytype, flightType, departuredate, returndate, outboundfareclass, inboundfareclass
                      ,siteedition
                      ,devicecategory
              ) AS ANC
@@ -60,6 +66,7 @@ FROM (
                  AND ANF.departureairportiatacode = ANC.anc_departureairportiatacode
                  AND ANF.arrivalairportiatacode = ANC.anc_arrivalairportiatacode
                  AND ANF.journeytype = ANC.anc_journeytype
+                 AND ANF.flightType = ANC.anc_flightType
                  AND ANF.departuredate = ANC.anc_departuredate
                  AND (ANF.returndate = ANC.anc_returndate
                      OR ANC.anc_returndate is null)
@@ -74,3 +81,7 @@ FROM (
               on departureairportiatacode = CDD.iatacode
          LEFT JOIN  farenet_s3.core_dictionary_001 CDA
                on arrivalairportiatacode = CDA.iatacode
+         LEFT JOIN  farenet_s3.core_dictionary_001 CDDB
+               on anc_departureairportiatacode = CDDB.iatacode
+         LEFT JOIN  farenet_s3.core_dictionary_001 CDAB
+               on anc_arrivalairportiatacode = CDAB.iatacode
