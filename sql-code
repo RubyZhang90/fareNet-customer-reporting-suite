@@ -54,6 +54,8 @@ FROM (
               WHERE airlineiatacode = 'SI'
                 AND farenetconfirmationdate >= DATE('2021-07-02')
                 AND farenetconfirmationdate < DATE('2023-01-01')
+                AND departureairportiatacode is not null
+                AND arrivalairportiatacode is not null
               GROUP BY airlineiatacode, farenetconfirmationdate, departureairportiatacode, arrivalairportiatacode,
                   journeytype, flightType, departuredate, returndate, outboundfareclass, inboundfareclass
                      ,siteedition
